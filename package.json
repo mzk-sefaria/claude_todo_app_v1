@@ -1,0 +1,10 @@
+{
+  "name": "granola-notion-sync",
+  "version": "1.0.0",
+  "description": "Sync Granola meetings to Notion database",
+  "main": "scripts/granola-sync.js",
+  "type": "commonjs",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}
