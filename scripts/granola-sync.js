@@ -87,7 +87,8 @@ async function extractActionItems(transcript, anthropicKey) {
   });
   
   if (!res.ok) {
-    log(`[Claude] API error: ${res.status}`);
+    const errBody = await res.text();
+    log(`[Claude] API error: ${res.status} — ${errBody}`);
     return [];
   }
   
