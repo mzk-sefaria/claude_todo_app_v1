@@ -80,7 +80,7 @@ async function extractActionItems(transcript, anthropicKey) {
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'claude-opus-4-1',
+      model: 'claude-sonnet-5',
       max_tokens: 500,
       messages: [{ role: 'user', content: prompt }],
     }),
