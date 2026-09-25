@@ -39,15 +39,10 @@ function getDateRange() {
 async function fetchGranolaMeetings(apiKey, sinceDate) {
   log(`[Granola] Fetching notes since ${sinceDate}...`);
   
-  const beforeDate = new Date();
-  beforeDate.setDate(beforeDate.getDate() + 1);
-  const beforeDateStr = beforeDate.toISOString().split('T')[0];
+  const sinceISO = new Date(sinceDate + 'T00:00:00Z').toISOString();
+  const url = `https://public-api.granola.ai/v1/notes?created_after=${encodeURIComponent(sinceISO)}`;
   
-  const url = new URL('https://api.granola.ai/v1/notes');
-  url.searchParams.append('created_after', sinceDate);
-  url.searchParams.append('created_before', beforeDateStr);
-  
-  const res = await fetch(url.toString(), {
+  const res = await fetch(url, {
     headers: { Authorization: `Bearer ${apiKey}` },
   });
   
@@ -56,20 +51,23 @@ async function fetchGranolaMeetings(apiKey, sinceDate) {
   }
   
   const data = await res.json();
-  const meetings = Array.isArray(data) ? data : data.meetings || [];
+  const meetings = data.notes || [];
   
   log(`[Granola] Found ${meetings.length} meetings`);
   return meetings;
 }
 
 async function getTranscript(apiKey, noteId) {
-  const res = await fetch(`https://api.granola.ai/v1/notes/${noteId}`, {
+  const res = await fetch(`https://public-api.granola.ai/v1/notes/${noteId}?include=transcript`, {
     headers: { Authorization: `Bearer ${apiKey}` },
   });
   
   if (!res.ok) return null;
   const data = await res.json();
-  return data.transcript || data.content || JSON.stringify(data);
+  if (Array.isArray(data.transcript)) {
+    return data.transcript.map(t => `${t.speaker || ''}: ${t.text || ''}`).join('\n');
+  }
+  return data.transcript || data.summary || null;
 }
 
 async function extractActionItems(transcript, anthropicKey) {
