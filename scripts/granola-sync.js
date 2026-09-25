@@ -78,6 +78,7 @@ async function extractActionItems(transcript, anthropicKey, workspaceId) {
     headers: {
       'x-api-key': anthropicKey,
       'content-type': 'application/json',
+      'anthropic-version': '2023-06-01',
       'anthropic-workspace-id': workspaceId,
     },
     body: JSON.stringify({
