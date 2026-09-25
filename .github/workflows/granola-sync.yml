@@ -5,7 +5,8 @@ on:
     # 7 AM ET = 12 PM UTC (standard time) or 11 AM UTC (daylight time)
     # Run Mon-Fri at 12:00 UTC (covers both)
     - cron: '0 12 * * 1-5'
-
+  workflow_dispatch:
+  
 jobs:
   sync:
     runs-on: ubuntu-latest
