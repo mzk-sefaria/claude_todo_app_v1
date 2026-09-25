@@ -5,8 +5,8 @@
  * Fetches meetings from Granola, extracts action items via Claude, writes to Notion
  */
 
-import fetch from 'node-fetch';
-import fs from 'fs';
+const fetch = require('node-fetch');
+const fs = require('fs');
 
 const log = (msg) => {
   console.log(msg);
