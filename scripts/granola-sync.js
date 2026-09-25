@@ -54,14 +54,14 @@ async function fetchGranolaMeetings(apiKey, sinceDate) {
   return meetings;
 }
 
-async function getTranscript(apiKey, meetingId) {
-  const res = await fetch(`https://api.granola.ai/v1/meetings/${meetingId}/transcript`, {
+async function getTranscript(apiKey, noteId) {
+  const res = await fetch(`https://api.granola.ai/v1/notes/${noteId}`, {
     headers: { Authorization: `Bearer ${apiKey}` },
   });
   
   if (!res.ok) return null;
   const data = await res.json();
-  return typeof data === 'string' ? data : data.transcript || JSON.stringify(data);
+  return data.transcript || data.content || JSON.stringify(data);
 }
 
 async function extractActionItems(transcript, anthropicKey) {
