@@ -37,9 +37,9 @@ function getDateRange() {
 }
 
 async function fetchGranolaMeetings(apiKey, sinceDate) {
-  log(`[Granola] Fetching meetings since ${sinceDate}...`);
+  log(`[Granola] Fetching notes since ${sinceDate}...`);
   
-  const res = await fetch('https://api.granola.ai/v1/meetings', {
+  const res = await fetch('https://api.granola.ai/v1/notes', {
     headers: { Authorization: `Bearer ${apiKey}` },
   });
   
