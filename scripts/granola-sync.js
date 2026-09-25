@@ -100,14 +100,16 @@ async function extractActionItems(transcript, anthropicKey, workspaceId) {
   try {
     // Extract JSON from response (may have markdown fences)
     const jsonMatch = content.match(/\[.*\]/s);
-    if (!jsonMatch) return [];
+    if (!jsonMatch) {
+      log(`[Claude] No JSON array found in response: ${content.slice(0, 200)}`);
+      return [];
+    }
     const items = JSON.parse(jsonMatch[0]);
     return Array.isArray(items) ? items : [];
-  } catch {
-    log(`[Claude] Failed to parse response: ${content.slice(0, 100)}`);
+  } catch (e) {
+    log(`[Claude] Failed to parse response: ${content.slice(0, 200)} — error: ${e.message}`);
     return [];
   }
-}
 
 async function createNotionPage(notionKey, dbId, title, type, person, priority) {
   const res = await fetch('https://api.notion.com/v1/pages', {
