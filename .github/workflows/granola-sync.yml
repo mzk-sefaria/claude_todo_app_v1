@@ -1,0 +1,33 @@
+name: Granola Sync to Notion
+
+on:
+  schedule:
+    # 7 AM ET = 12 PM UTC (standard time) or 11 AM UTC (daylight time)
+    # Run Mon-Fri at 12:00 UTC (covers both)
+    - cron: '0 12 * * 1-5'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm install node-fetch
+      
+      - name: Run Granola sync
+        env:
+          GRANOLA_API_KEY: ${{ secrets.GRANOLA_API_KEY }}
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/granola-sync.js
+      
+      - name: Log results
+        if: always()
+        run: cat /tmp/granola-sync.log 2>/dev/null || echo "No log available"
