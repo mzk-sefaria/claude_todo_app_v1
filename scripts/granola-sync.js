@@ -70,7 +70,7 @@ async function getTranscript(apiKey, noteId) {
   return data.transcript || data.summary || null;
 }
 
-async function extractActionItems(transcript, anthropicKey) {
+async function extractActionItems(transcript, anthropicKey, workspaceId) {
   const prompt = `Extract action items from this meeting transcript that are specifically assigned to or for Michael. Return ONLY a JSON array of strings, each being a concise action item (max 100 chars). If none, return []. Transcript:\n\n${transcript}`;
   
   const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -78,6 +78,7 @@ async function extractActionItems(transcript, anthropicKey) {
     headers: {
       'x-api-key': anthropicKey,
       'content-type': 'application/json',
+      'anthropic-workspace-id': workspaceId,
     },
     body: JSON.stringify({
       model: 'claude-sonnet-5',
@@ -140,6 +141,7 @@ async function main() {
   const notionKey = process.env.NOTION_API_KEY;
   const notionDbId = process.env.NOTION_DATABASE_ID;
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const workspaceId = process.env.CLAUDE_WORKSPACE_ID;
   
   if (!granolaKey || !notionKey || !notionDbId || !anthropicKey) {
     throw new Error('Missing required environment variables. Set GRANOLA_API_KEY, NOTION_API_KEY, NOTION_DATABASE_ID, ANTHROPIC_API_KEY.');
@@ -168,7 +170,7 @@ async function main() {
           continue;
         }
         
-        const items = await extractActionItems(transcript, anthropicKey);
+        const items = await extractActionItems(transcript, anthropicKey, workspaceId);
         log(`  → Extracted ${items.length} action item(s)`);
         
         for (const item of items) {
