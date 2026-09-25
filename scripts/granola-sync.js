@@ -110,6 +110,7 @@ async function extractActionItems(transcript, anthropicKey, workspaceId) {
     log(`[Claude] Failed to parse response: ${content.slice(0, 200)} — error: ${e.message}`);
     return [];
   }
+}
 
 async function createNotionPage(notionKey, dbId, title, type, person, priority) {
   const res = await fetch('https://api.notion.com/v1/pages', {
