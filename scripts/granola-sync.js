@@ -39,7 +39,15 @@ function getDateRange() {
 async function fetchGranolaMeetings(apiKey, sinceDate) {
   log(`[Granola] Fetching notes since ${sinceDate}...`);
   
-  const res = await fetch('https://api.granola.ai/v1/notes', {
+  const beforeDate = new Date();
+  beforeDate.setDate(beforeDate.getDate() + 1);
+  const beforeDateStr = beforeDate.toISOString().split('T')[0];
+  
+  const url = new URL('https://api.granola.ai/v1/notes');
+  url.searchParams.append('created_after', sinceDate);
+  url.searchParams.append('created_before', beforeDateStr);
+  
+  const res = await fetch(url.toString(), {
     headers: { Authorization: `Bearer ${apiKey}` },
   });
   
